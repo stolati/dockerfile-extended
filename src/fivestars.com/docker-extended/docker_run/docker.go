@@ -102,8 +102,7 @@ func BuildDocker(
 func CleanTag(tag string, dryRun bool, debug bool)(err error){
 
 	args := []string{
-		"images",
-		"rm",
+		"rmi",
 		tag,
 	}
 
