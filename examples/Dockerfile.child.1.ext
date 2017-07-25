@@ -1,4 +1,7 @@
-FROM_FILE ./Dockerfile.1.ext
+
+CONTEXT NONE
+
+FROM_FILE ./Dockerfile.ext.root
 
 RUN echo {{.Env.USERNAME | quote}} is the best
 

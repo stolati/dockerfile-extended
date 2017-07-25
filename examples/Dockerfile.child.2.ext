@@ -1,0 +1,7 @@
+
+CONTEXT NONE
+
+FROM_FILE ./Dockerfile.ext.root
+
+RUN sh -c "echo build on branch {{.Git.BRANCH}} with hash {{.Git.HASH_10}} && sleep 999999"
+

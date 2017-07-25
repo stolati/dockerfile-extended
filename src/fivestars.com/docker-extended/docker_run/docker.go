@@ -10,6 +10,8 @@ import (
 	"fmt"
 )
 
+// TODO --iidfile can be handy
+
 func BuildDocker(
 	dockerInfo docker_parser.Parser,
 	contextPath string,
@@ -100,7 +102,7 @@ func BuildDocker(
 func CleanTag(tag string, dryRun bool, debug bool)(err error){
 
 	args := []string{
-		"image",
+		"images",
 		"rm",
 		tag,
 	}

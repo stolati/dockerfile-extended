@@ -14,4 +14,4 @@ RUN echo "{{.Git.IS_MASTER}}"
 
 COPY .gitignore .
 
-CMD echo "I was build on host {{.Local.HOSTNAME}} by {{.Local.USERNAME}} on commit {{.Git.HASH_10}}"
+CMD echo "I was build on host {{.Local.HOSTNAME}} by {{.Local.USERNAME}}"
