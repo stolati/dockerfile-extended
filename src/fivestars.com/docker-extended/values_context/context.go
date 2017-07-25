@@ -90,12 +90,17 @@ func localContext(dir string)(res Ctx){
 
 func printContextDebug(ctx MainCtx){
 
+	fmt.Println("#####################")
+	fmt.Println("Context of template :")
+	fmt.Println("#####################")
+
 	for name, subCtx := range ctx {
-		fmt.Printf("%s:\n", name)
+		fmt.Println(name+ ":")
 		for k, v := range subCtx {
 			fmt.Printf("    %s: \"%s\"\n", k, v)
 		}
 	}
+	fmt.Println()
 }
 
 

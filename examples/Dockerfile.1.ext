@@ -1,3 +1,9 @@
+
+TAG toto
+TAG titi
+
+CONTEXT ..
+
 FROM alpine
 
 # THis is a very simple example of value getting from
@@ -5,5 +11,7 @@ FROM alpine
 RUN echo "{{.Env.GOPATH}}"
 RUN echo "{{.Git.BRANCH}}"
 RUN echo "{{.Git.IS_MASTER}}"
+
+COPY .gitignore .
 
 CMD echo "I was build on host {{.Local.HOSTNAME}} by {{.Local.USERNAME}} on commit {{.Git.HASH_10}}"

@@ -48,20 +48,15 @@ func TestWithAll(t *testing.T) {
 		"# CACHED_FROM cache_place",
 		"# CONTEXT ../",
 		"# FROM_FILE ./Dockerfile.ori",
-		"FROM " + parser.tmpTag,
+		"FROM " + parser.TmpTag,
 		"rest of the file",
 		"",
 	}, "\n")
 
 	is.Equal(parser.GetDockerFileContent(), contentRes)
-	is.Equal(parser.tags, []string{"toto", "titi"})
-	is.Equal(parser.cachedFrom, "cache_place")
-	is.Equal(parser.contextPath, "../")
-	is.Equal(parser.fromFile, "./Dockerfile.ori")
-
-	//tags              []string // list of tags from the command TAG
-	//fromFile          string   // FROM_FILE
-	//cachedFrom        string   // CACHED_FROM
-	//contextPath       string   // CONTEXT
+	is.Equal(parser.Tags, []string{"toto", "titi"})
+	is.Equal(parser.CachedFrom, "cache_place")
+	is.Equal(parser.ContextPath, "../")
+	is.Equal(parser.FromFile, "./Dockerfile.ori")
 
 }

@@ -4,9 +4,10 @@ import (
 	"../values_context"
 	"io/ioutil"
 	"text/template"
-	"log"
 	"bytes"
 	"path"
+	"github.com/Masterminds/sprig"
+	"fmt"
 )
 
 func ApplyTemplate(dockerFile string, ctx values_context.MainCtx, debug bool) (output string, err error) {
@@ -17,7 +18,7 @@ func ApplyTemplate(dockerFile string, ctx values_context.MainCtx, debug bool) (o
 	}
 
 	content_str := string(content[:])
-	tmpl, tmplErr := template.New(path.Base(dockerFile)).Parse(content_str)
+	tmpl, tmplErr := template.New(path.Base(dockerFile)).Funcs(sprig.TxtFuncMap()).Parse(content_str)
 	if tmplErr != nil {
 		return "", tmplErr
 	}
@@ -29,8 +30,11 @@ func ApplyTemplate(dockerFile string, ctx values_context.MainCtx, debug bool) (o
 	}
 
 	if debug {
-		log.Println("Dockerfile to execute :")
-		println(buf.String())
+		fmt.Println("#####################")
+		fmt.Println("Template output :")
+		fmt.Println("#####################")
+		fmt.Println(buf.String())
+		fmt.Println()
 	}
 
 	return buf.String(), nil
