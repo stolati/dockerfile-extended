@@ -50,7 +50,8 @@ func gitContext(dir string) (res Ctx) {
 	hash, hashErr := gitCall(dir, "rev-parse", "HEAD")
 	branch, branchErr := gitCall(dir, "rev-parse", "--abbrev-ref", "HEAD")
 	porcelain, porcelainErr := gitCall(dir,"status", "--porcelain")
-	if hashErr != nil || branchErr != nil || porcelainErr != nil {
+	projectPath, projectPathErr := gitCall(dir, "rev-parse", "--show-toplevel")
+	if hashErr != nil || branchErr != nil || porcelainErr != nil || projectPathErr != nil {
 		return // If not a git repository, return nothing
 	}
 
@@ -60,6 +61,7 @@ func gitContext(dir string) (res Ctx) {
 	res["IS_MASTER"] = strconv.FormatBool(branch == "master")
 	res["IS_STAGING"] = strconv.FormatBool(branch == "staging")
 	res["IS_PORCELAIN"] = strconv.FormatBool(porcelain == "")
+	res["PROJECT_PATH"] = projectPath
 	return
 }
 
@@ -86,10 +88,13 @@ func localContext(dir string)(res Ctx){
 	return
 }
 
-func printContextDebug(name string, ctx Ctx){
-	fmt.Printf("%s:\n", name)
-	for k, v := range ctx {
-		fmt.Printf("    %s: \"%s\"\n", k, v)
+func printContextDebug(ctx MainCtx){
+
+	for name, subCtx := range ctx {
+		fmt.Printf("%s:\n", name)
+		for k, v := range subCtx {
+			fmt.Printf("    %s: \"%s\"\n", k, v)
+		}
 	}
 }
 
@@ -102,9 +107,7 @@ func GetContext(dir string, debug bool)(mainCtx MainCtx){
 	}
 
 	if debug {
-		for k, v := range mainCtx {
-			printContextDebug(k, v)
-		}
+		printContextDebug(mainCtx)
 	}
 
 	return

@@ -1,9 +1,9 @@
 package docker_run
 
 import (
-	"io/ioutil"
 	"os/exec"
 	"os"
+	"io/ioutil"
 )
 
 func BuildDocker(dockerFileContent string, contextPath string, dryRun bool) (err error) {
