@@ -1,6 +1,6 @@
 
 TAG toto
-TAG titi
+TAG {{.Git.BRANCH}}
 
 CONTEXT ..
 

@@ -34,31 +34,22 @@ func main() {
 	}
 
 	// Instead of one file, we have a directory with a bunch of dockerfiles in it
-	globDirFiles, globDirErr := filepath.Glob(*dockersDirectoryPtr + "/**/Dockerfile.*.ext")
-	if globDirErr != nil {
-		log.Fatal(globDirErr)
-	}
-	globRootFiles, globRootErr := filepath.Glob(*dockersDirectoryPtr + "/Dockerfile.*.ext")
-	if globRootErr != nil {
-		log.Fatal(globRootErr)
+	filepaths, findErr := dockerfileFinder(*dockersDirectoryPtr, *debugPtr)
+	if findErr != nil {
+		log.Fatal(findErr)
 	}
 
-	filenames := append(globDirFiles, globRootFiles...)
-	if len(filenames) == 0 {
-		absPath, _ := filepath.Abs(*dockersDirectoryPtr)
-		log.Fatal("No dockerfile Dockerfile.*.ext found in " + absPath)
-		return
+	if len(filepaths) == 0 {
+		log.Fatal("No dockerfile Dockerfile.*.ext found in " + *dockersDirectoryPtr)
 	}
 
-	for _, dockerfile := range filenames {
+	for _, dockerfile := range filepaths {
 		launchErr := LaunchDocker(dockerfile, "", bypassArgs, *debugPtr, *dryRunPtr)
 		if launchErr != nil {
 			log.Fatal(launchErr)
 		}
 
 	}
-
-	print(len(filenames))
 
 }
 
@@ -93,11 +84,11 @@ func LaunchDocker(dockerfile string, needToBeTag string, bypassArgs []string, de
 		// Here we need another file to be FROM
 		parentDockerfile := filepath.Clean(filepath.Join(dirContext, parserRes.FromFile))
 
+		defer docker_run.CleanTag(parserRes.TmpTag, dryRun, debug)
 		launchDockerErr := LaunchDocker(parentDockerfile, parserRes.TmpTag, bypassArgs, debug, dryRun)
 		if launchDockerErr != nil {
 			return launchDockerErr
 		}
-		defer docker_run.CleanTag(parserRes.TmpTag, dryRun, debug)
 	}
 
 	buildErr := docker_run.BuildDocker(parserRes, dirContext, bypassArgs, needToBeTag, dryRun, debug)
@@ -106,4 +97,34 @@ func LaunchDocker(dockerfile string, needToBeTag string, bypassArgs []string, de
 	}
 
 	return nil
+}
+
+const DOCKERFILE_PATTERN = "Dockerfile.*.ext"
+
+func dockerfileFinder(path string, debug bool) (filepaths []string, err error) {
+
+	// Instead of one file, we have a directory with a bunch of dockerfiles in it
+	globDirFiles, globDirErr := filepath.Glob(path + "/**/" + DOCKERFILE_PATTERN)
+	if globDirErr != nil {
+		return filepaths, globDirErr
+	}
+	filepaths = append(filepaths, globDirFiles...)
+
+	globRootFiles, globRootErr := filepath.Glob(path + "/" + DOCKERFILE_PATTERN)
+	if globRootErr != nil {
+		return filepaths, globRootErr
+	}
+	filepaths = append(filepaths, globRootFiles...)
+
+	if debug {
+		fmt.Println("#####################")
+		fmt.Println("Dockerfile searching : ", len(filepaths), " found")
+		fmt.Println("#####################")
+		for _, df := range filepaths {
+			fmt.Println(df)
+		}
+		fmt.Println("")
+	}
+
+	return filepaths, nil
 }
