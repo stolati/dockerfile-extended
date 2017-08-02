@@ -18,7 +18,7 @@ func TestTemplate(t *testing.T) {
 		"",
 	}, "\n")
 
-	parser, err := Parse(content)
+	parser, err := Parse(content, false)
 
 	is.NoError(err)
 	is.Equal(content, parser.GetDockerFileContent())
@@ -39,7 +39,7 @@ func TestWithAll(t *testing.T) {
 		"",
 	}, "\n")
 
-	parser, err := Parse(content)
+	parser, err := Parse(content, false)
 	is.NoError(err)
 
 	contentRes := strings.Join([]string{
