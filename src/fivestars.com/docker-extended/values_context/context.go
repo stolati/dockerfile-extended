@@ -14,7 +14,6 @@ import (
 type Ctx map[string]string
 type MainCtx map[string]map[string]string
 
-
 func envContext() (res Ctx) {
 	res = make(Ctx)
 	for _, e := range os.Environ() {
@@ -49,11 +48,16 @@ func gitContext(dir string) (res Ctx) {
 
 	hash, hashErr := gitCall(dir, "rev-parse", "HEAD")
 	branch, branchErr := gitCall(dir, "rev-parse", "--abbrev-ref", "HEAD")
-	porcelain, porcelainErr := gitCall(dir,"status", "--porcelain")
+	porcelain, porcelainErr := gitCall(dir, "status", "--porcelain")
 	projectPath, projectPathErr := gitCall(dir, "rev-parse", "--show-toplevel")
+	remoteUrl, _ := gitCall(dir, "config", "--get", "remote.origin.url")
 	if hashErr != nil || branchErr != nil || porcelainErr != nil || projectPathErr != nil {
 		return // If not a git repository, return nothing
 	}
+
+	urlSplitted := strings.Split(remoteUrl, "/")
+	projectNameGit := urlSplitted[len(urlSplitted)-1]
+	projectName := strings.Replace(projectNameGit, ".git", "", -1)
 
 	res["HASH_FULL"] = hash
 	res["HASH_10"] = hash[:10]
@@ -62,11 +66,11 @@ func gitContext(dir string) (res Ctx) {
 	res["IS_STAGING"] = strconv.FormatBool(branch == "staging")
 	res["IS_PORCELAIN"] = strconv.FormatBool(porcelain == "")
 	res["PROJECT_PATH"] = projectPath
+	res["PROJECT_NAME"] = projectName
 	return
 }
 
-
-func localContext(dir string)(res Ctx){
+func localContext(dir string) (res Ctx) {
 	res = make(Ctx)
 	hostname, hostErr := os.Hostname()
 	if hostErr == nil {
@@ -88,14 +92,14 @@ func localContext(dir string)(res Ctx){
 	return
 }
 
-func printContextDebug(ctx MainCtx){
+func printContextDebug(ctx MainCtx) {
 
 	fmt.Println("#####################")
 	fmt.Println("Context of template :")
 	fmt.Println("#####################")
 
 	for name, subCtx := range ctx {
-		fmt.Println(name+ ":")
+		fmt.Println(name + ":")
 		for k, v := range subCtx {
 			fmt.Printf("    %s: \"%s\"\n", k, v)
 		}
@@ -103,12 +107,11 @@ func printContextDebug(ctx MainCtx){
 	fmt.Println()
 }
 
-
-func GetContext(dir string, debug bool)(mainCtx MainCtx){
-	mainCtx = MainCtx {
-		"Env": envContext(),
+func GetContext(dir string, debug bool) (mainCtx MainCtx) {
+	mainCtx = MainCtx{
+		"Env":   envContext(),
 		"Local": localContext(dir),
-		"Git": gitContext(dir),
+		"Git":   gitContext(dir),
 	}
 
 	if debug {

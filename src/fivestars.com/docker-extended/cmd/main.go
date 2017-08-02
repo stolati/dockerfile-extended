@@ -14,10 +14,10 @@ import (
 
 func main() {
 
-	dockerfilePtr := flag.String("dockerfile", "", "the dockerfile to process")
-	dockersDirectoryPtr := flag.String("dir", ".", "the directory to where search for dockerfiles")
-	debugPtr := flag.Bool("debug", false, "Show the dockerfile generated")
-	dryRunPtr := flag.Bool("dry-run", false, "Don't really build the dockerfile")
+	dockerfilePtr := flag.String("dockerfile", "", "dockerfile to process")
+	dockersDirectoryPtr := flag.String("dir", ".", "directory to where search for dockerfiles")
+	debugPtr := flag.Bool("debug", false, "Show and explain everything")
+	dryRunPtr := flag.Bool("dry-run", false, "Don't really build")
 
 	flag.Parse()
 	bypassArgs := flag.Args()
