@@ -175,25 +175,64 @@ Follow helm lead.
 - Adding a CACHED_FROM command, with the corresponding parameter
 The catched, is that cached from is only from a specific tag on the registry.
 So we may need to have a smart way of choosing it.
+- We use recursive programming to build the parent. That mean double building currently.
+If two child need the same parent, we are trying to build the parent twice.
+It's not a big problem with the caching system, but it's still avoidable waiting.
+- Checking for looping dependency. No check is made for that.
+But something's wrong if you have so many inheritance that you left some loop somewhere.
+- adding some security measure :
+  - TAG : don't override existing image
+  - CONTEXT : don't allow absolute path, don't grab more than the git project
+  - ENV : remove everything that can be used against people (PATH, PGPASSWORD)
+  - parameters/parser command to activate/deactivate features (ex : only template)
+- SQUASH command, to squash multiples layers into one
 
 
 # Good practices
 
-We're
+We're not telling you what to do,
+but some of thoses features are ready to fire you in the foot.
+
+### Think twice about using values that are local
+
+With this version, it's easy to use a value that is specific to the computer
+you're using. The `.Env` is filled with that.
+Everything should be possible without using thoses.
+We provide the env variable because it's an easy way to give values to your template.
+But the preferred way will be passing values/values' file (once it's implemented).
+
+### Templating can break your cache layers
+
+Templating is a great tool, but the output of it can break you cache layer.
+Between having values that are calculated and
 
 
+### Context are meant in the project
 
+Don't use the context outside of the current project.
+By going up `../../../..` or starting from root `/home`
+it's easy to select more than just the project you are working on.
 
+### Thinking security
 
+You're supposed to know what you are doing, and the `--debug` command
+give you plenty of information for that.
+This project has been created with the though that you own your building process and your dockerfiles.
+Don't build a dockerfile.ext without looking inside it if it's doing something fishy.
 
+There is many way adding thoses feature can lead to security flaws:
+- tag can override an existing image (ex: ubuntu, apline, or any database)
+- context can grab all disk (don't publish it publicly after that)
+- someone env can be printed and saved inside the docker image (PGPASSWORD anyone?)
 
+### Dockerfile is already powerfull
 
+Just who choose this format ? Why creating a brand new format when you
+can choose json, yaml, xml and many more that you don't have to parse in
+a strange way ? I digress.
 
-
-
-
-
-
-
+Dockerfile has already a lot of features that make it powerfull. The features
+dockerfile-extended add are not necessary to have a sane build environment.
+It's just hell more powerfull than adding some ARG.
 
 
