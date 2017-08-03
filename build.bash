@@ -12,11 +12,11 @@ mkdir -p "$PROJECT_ROOT/output"
 ## What you want to build : https://golang.org/doc/install/source#environment
 build(){
     typeset GOOS="$1" GOARCH="$2"
-    go build -v -o "$PROJECT_ROOT/output/main_${GOOS}" "$MAIN_PATH"
+    env GOOS="$1" GOARCH="$2" go build -o "$PROJECT_ROOT/output/main_${GOOS}" "$MAIN_PATH"
 }
 
 
-build linux amd64
 build windows amd64
+build linux amd64
 build darwin amd64
 
