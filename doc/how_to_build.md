@@ -9,6 +9,7 @@ Command to launch :
 TAG=dockerfile-extended:latest
 docker build . -t $TAG
 mkdir -p output
+# TODO use docker copy instead of this hack
 docker run $TAG cat /srv/output/main_windows > output/main_windows.exe
 docker run $TAG cat /srv/output/main_linux > output/main_linux
 docker run $TAG cat /srv/output/main_darwin > output/main_darwin
