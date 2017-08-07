@@ -72,11 +72,11 @@ Like the new --squash, we can do it the old ways by exporting the image.
 Some of the features like that can be emulated with older versions.
 
 
-## INCLUDE command
+## INCLUDE Instruction
 From a dockerfile, add another docker file. This allow more complex files to be used, or even compounds.
 I know we can do that in the templating system, but having a docker command would be interesting for clarity
 
-## Improve FROM command
+## Improve FROM Instruction
 Instead of having a `FROM` and a `FROM_FILE`, let's use a FROM, but allow for multiples values to be added.
 If one value is not present, then the next will be used.
 
@@ -84,6 +84,10 @@ If one value is not present, then the next will be used.
 `FROM tag dockerfile` => if the dockerfile create the tag, it won't be called again if built
 `FROM dockerifle` => always try to build the dockerfile
 
+## HOST_RUN Instruction
+It's just an idea, but maybe we can add the HOST_RUN command.
+It would allow for exapmle automatically
 
-
-
+## NO_CACHE_FROM_HERE Instruction
+Cancel the cache system from a certain point in the dockerfile.
+(instead of the all or nothing --no-cache)

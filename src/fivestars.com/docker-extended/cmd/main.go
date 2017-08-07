@@ -10,6 +10,8 @@ import (
 	"../docker_parser"
 	"fmt"
 	"strings"
+	"github.com/docker/docker/builder/dockerfile/command"
+	"github.com/docker/docker/builder/dockerfile/parser"
 )
 
 func main() {
