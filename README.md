@@ -236,3 +236,16 @@ dockerfile-extended add are not necessary to have a sane build environment.
 It's just hell more powerfull than adding some ARG.
 
 
+
+### TODO
+Here is a list of TODO without order :
+- copy file with template
+- pull open source project from github and see if we can 80% test+build it without configuration.
+- docker-compose wrapper
+- Change path on volumes (usefull for wsl on windows)
+- Template on the dockerfile.
+- Change to python for faster development.
+- Use most of the docker parameters from inside the dockerfile.
+- Reference volume by name from outside ?
+
+
